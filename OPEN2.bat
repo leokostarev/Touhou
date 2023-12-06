@@ -1,0 +1,1 @@
+"C:\Users\user\AppData\Local\Programs\Rider\bin\rider64.exe" "C:\Users\user\Documents\UnityProjects\Touhou\Touhou.sln"
