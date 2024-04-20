@@ -1,43 +1,40 @@
 ﻿using System;
 using Game.Events;
 using Game.Laser;
+using Helpers;
 using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 
 namespace Game.BossAttacks {
     public class Marisa5 : IBossAttack {
         public Action Callback { get; set; }
-
         private readonly CompositeDisposable _disposable = new();
 
-        private float lastTime = 10f;
+        private Instant endTime;
         private int stacks;
-        private const float cooldown = 1f;
 
-        private float accumulatedTime;
+        private CooldownTimer fireCooldown;
 
         public void CleanUp() => _disposable.Clear();
 
         public void Begin() {
+            endTime = new Instant(10f);
+
             Observable.EveryUpdate().Subscribe(_ => Update()).AddTo(_disposable);
-            Random.InitState(3);
         }
 
-
         private void Update() {
-            accumulatedTime += Time.deltaTime;
-            lastTime -= Time.deltaTime;
-            if (lastTime < 0) {
+            fireCooldown.Tick();
+
+            if (endTime.Elapsed) {
                 Callback();
                 _disposable.Clear();
                 return;
             }
 
-            while (accumulatedTime > cooldown) {
-                accumulatedTime -= cooldown;
+            while (fireCooldown.IsReady()) {
                 Fire();
             }
         }

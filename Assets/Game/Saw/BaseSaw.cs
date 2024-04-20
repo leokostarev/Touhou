@@ -2,31 +2,21 @@ using UnityEngine;
 
 namespace Game.Saw {
     public class BaseSaw : MonoBehaviour {
-        private enum SawAI {
-            Grow
-        }
-
-        [SerializeField] private AudioClip clickSound;
+        [SerializeField] private AudioClip sound;
 
         [HideInInspector] public float size = 1;
         [HideInInspector] public float lastTime;
         [HideInInspector] public float growTime = .5f;
-        private SawAI aiType = SawAI.Grow;
 
         private float accumulatedTime;
 
-        #region optional (depends on AI type)
 
-        // Monotone
         public float speed;
-
-        #endregion
-
 
         private void Start() {
             transform.localScale *= size;
 
-            AudioSource.PlayClipAtPoint(clickSound, default);
+            AudioSource.PlayClipAtPoint(sound, default);
         }
 
         private void Update() {

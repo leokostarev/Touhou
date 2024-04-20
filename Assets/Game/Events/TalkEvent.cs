@@ -45,25 +45,22 @@ namespace Game.Events {
             if (characterMove is DialogMove.Show or DialogMove.ShowAndHide && name != "")
                 _tween = pictures[name].transform.DOMove(pictures[name].endPos, transitionTime);
             text.text = phrase;
-            Player.instance.interactEvent += End;
-            if (panelMove is DialogMove.Show or DialogMove.ShowAndHide)
-                EnablePanel();
+            Player.Instance.interactEvent += End;
+            if (panelMove is DialogMove.Show or DialogMove.ShowAndHide) EnablePanel();
         }
 
         private void End() {
             _tween?.Kill();
-            Player.instance.interactEvent -= End;
+            Player.Instance.interactEvent -= End;
             if (characterMove is DialogMove.Hide or DialogMove.ShowAndHide && name != "")
                 pictures[name].transform.DOMove(pictures[name].basePos, transitionTime);
-            if (panelMove is DialogMove.Hide or DialogMove.ShowAndHide)
-                DiasblePanel();
+            if (panelMove is DialogMove.Hide or DialogMove.ShowAndHide) DiasblePanel();
             doEnd = true;
             endAt = Time.time + transitionTime;
         }
 
         public void Update() {
-            if (doEnd && Time.time > endAt)
-                onEnd!.Invoke();
+            if (doEnd && Time.time > endAt) onEnd!.Invoke();
         }
 
         private static void EnablePanel() =>

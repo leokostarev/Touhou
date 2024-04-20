@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace Game.Bullet {
-    public partial class BaseBullet {
+    public partial class Bullet {
         public struct BulletAIOrbital : IBulletAI {
             private readonly Vector3 originPos;
             private readonly float originRadius;
@@ -18,7 +18,7 @@ namespace Game.Bullet {
 
             public IBulletAI Clone() => this;
 
-            public void OnFixedUpdate(BaseBullet bullet) {
+            public void OnFixedUpdate(Bullet bullet) {
                 nowAngle += angularSpeed;
                 bullet.transform.position = originPos + Quaternion.Euler(0, 0, nowAngle) * Vector3.right * originRadius;
             }

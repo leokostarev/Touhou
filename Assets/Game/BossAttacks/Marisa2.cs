@@ -2,44 +2,42 @@
 using System.Diagnostics.CodeAnalysis;
 using Game.Bullet;
 using Game.Events;
+using Helpers;
 using UniRx;
 using UnityEngine;
-using BaseBullet = Game.Bullet.BaseBullet;
 
 namespace Game.BossAttacks {
     public class Marisa2 : IBossAttack {
         private static readonly BulletBuilder builder =
-            new BulletBuilder(new BaseBullet.BulletAIForward(4))
+            new BulletBuilder(new Bullet.Bullet.BulletAIForward(4))
                 .SetRadius(.2f);
 
         public Action Callback { get; set; }
-
         private readonly CompositeDisposable _disposable = new();
 
-        private float allTime = 10f;
-        private const float cooldown = .3f;
+        private Instant endTime;
+        private CooldownTimer fireCooldown = new(.3f);
 
         private float deltaAngle; // in degrees
-
-        private float accumulatedTime;
 
         public void CleanUp() => _disposable.Clear();
 
         public void Begin() {
+            endTime = new Instant(10f);
+
             Observable.EveryUpdate().Subscribe(_ => Update()).AddTo(_disposable);
         }
 
         private void Update() {
-            accumulatedTime += Time.deltaTime;
-            allTime -= Time.deltaTime;
-            if (allTime < 0) {
+            fireCooldown.Tick();
+
+            if (endTime.Elapsed) {
                 Callback();
                 _disposable.Clear();
                 return;
             }
 
-            while (accumulatedTime > cooldown) {
-                accumulatedTime -= cooldown;
+            while (fireCooldown.IsReady()) {
                 Fire();
             }
         }
@@ -70,7 +68,7 @@ namespace Game.BossAttacks {
                 rotation * new Vector3(-.4f, .4f),
                 rotation * new Vector3(-.4f, -.4f),
                 rotation * new Vector3(-.6f, .6f),
-                rotation * new Vector3(-.6f, -.6f),
+                rotation * new Vector3(-.6f, -.6f)
             };
         }
     }

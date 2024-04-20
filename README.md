@@ -1,2 +1,3 @@
 # Touhou
- Fan game in touhou universe
+
+Fan game in the touhou universe

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Extensions;
 using Game.Bullet;
 using Game.Events;
 using Game.Saw;
+using Helpers;
 using UniRx;
-using UnityEngine;
-using BaseBullet = Game.Bullet.BaseBullet;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -16,41 +16,35 @@ namespace Game.BossAttacks {
 
         private readonly CompositeDisposable _disposable = new();
 
-        private float allTime = 10f;
+        private Instant endTime;
         private const float spawnRadius = 10f;
-        private readonly float cooldown = .01f;
 
         private bool isAttackFase;
         private int BulletsLast = 200;
-        private readonly List<BaseBullet> bullets = new();
+        private readonly List<Bullet.Bullet> bullets = new();
 
-        private float accumulatedTime;
+        private CooldownTimer fireCooldown = new(.01f);
 
         public void CleanUp() => _disposable.Clear();
 
-        public Marisa6(float difficulty = 1f) {
-            cooldown /= difficulty;
-        }
-
         public void Begin() {
+            endTime = new Instant(10f);
+
             Observable.EveryUpdate().Subscribe(_ => Update()).AddTo(_disposable);
-            Random.InitState(18);
             PreFire();
         }
 
 
         private void Update() {
-            allTime -= Time.deltaTime;
-            if (allTime < 0) {
+            if (endTime.Elapsed) {
                 Callback();
                 _disposable.Clear();
                 return;
             }
 
             if (isAttackFase) return;
-            accumulatedTime += Time.deltaTime;
-            while (accumulatedTime > cooldown) {
-                accumulatedTime -= cooldown;
+            fireCooldown.Tick();
+            while (fireCooldown.IsReady()) {
                 Fire();
             }
         }
@@ -64,7 +58,7 @@ namespace Game.BossAttacks {
 
             for (var i = 0; i < 360; i += 10) {
                 var b =
-                    new BulletBuilder(new BaseBullet.BulletAIOrbital(BossPos, 1.5f, -60, i))
+                    new BulletBuilder(new Bullet.Bullet.BulletAIOrbital(BossPos, 1.5f, -60, i))
                         .SetRadius(.2f)
                         .SetIsFrozen(true)
                         .Build();
@@ -72,7 +66,9 @@ namespace Game.BossAttacks {
                 bullets.Add(b);
             }
 
-            if ((Player.instance.transform.position - BossPos).magnitude < 1.7) Player.instance.ResetPosition();
+            if (Player.Instance.transform.position.DistanceTo(BossPos) < 1.7) {
+                Player.Instance.ResetPosition();
+            }
         }
 
         private void Fire() {
@@ -87,7 +83,7 @@ namespace Game.BossAttacks {
             var BossPos = FightEvent.boss.transform.position;
 
             var b = new BulletBuilder(
-                    new BaseBullet.BulletAIOrbital(
+                    new Bullet.Bullet.BulletAIOrbital(
                         BossPos,
                         Random.Range(1.6f, spawnRadius),
                         40,

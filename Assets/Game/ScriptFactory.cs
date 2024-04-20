@@ -36,7 +36,7 @@ namespace Game {
             new TalkEvent("Marisa", "Хнык хнык"),
             new TalkEvent("Reimu", "Ладно, хоть ты и украла у меня пиво, я с тобой поделюсь"),
             new TalkEvent("Marisa", "Спасибо"),
-            new TalkEvent("Reimu", "Держи", panelMove: Hide),
+            new TalkEvent("Reimu", "Держи", panelMove: Hide)
         };
 
         private static List<IScriptEvent> ScriptExtra() => new() {
@@ -61,7 +61,7 @@ namespace Game {
             new TalkEvent("Marisa", "Чё это было"),
             new TalkEvent("Reimu", "В последнее время в нашем лесу стали появлятся странные сумасшедшие"),
             new TalkEvent("Marisa", "Ну нафиг"),
-            new TalkEvent("Reimu", "Просто забей, пойдём дальше"),
+            new TalkEvent("Reimu", "Просто забей, пойдём дальше")
 
             // new FightEvent("")
         };

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace Game.Bullet {
-    public partial class BaseBullet {
+    public partial class Bullet {
         public readonly struct BulletAIStraight : IBulletAI {
             private readonly Vector3 direction;
 
@@ -11,7 +11,7 @@ namespace Game.Bullet {
 
             public IBulletAI Clone() => this;
 
-            public void OnFixedUpdate(BaseBullet bullet) {
+            public void OnFixedUpdate(Bullet bullet) {
                 bullet.transform.position += direction;
             }
         }

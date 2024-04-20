@@ -17,17 +17,17 @@ namespace Game.Events {
         }
 
         public void CleanUp() {
-            Player.instance.IsActive = true;
+            Player.Instance.IsActive = true;
             boss.CleanUp();
         }
 
         public void Begin() {
             boss = Object.Instantiate(SharedData.boss).GetComponent<BossScript>();
             boss.Init(bossName, bossPhase);
-            Player.instance.IsActive = true;
+            Player.Instance.IsActive = true;
             IsBossSet = true;
             boss.onAttacksEnd += () => {
-                Player.instance.IsActive = false;
+                Player.Instance.IsActive = false;
 
                 IsBossSet = false;
                 boss.CleanUp();

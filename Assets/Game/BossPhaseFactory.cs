@@ -34,11 +34,11 @@ namespace Game {
 
             new BossMove((.5f, .8f), 0),
             new BossWait(1.5f),
-            new Marisa0(10, true, cooldown: .2f, deltaDeg: 170f),
+            new Marisa0(10, true, cooldown_: .2f, deltaDeg_: 170f),
 
             new BossMove((.5f, .2f), .5f),
             new BossWait(.5f),
-            new Marisa0(9, cooldown: .2f, deltaDeg: 170f),
+            new Marisa0(9, cooldown_: .2f, deltaDeg_: 170f),
 
             new BossWait(4)
         };

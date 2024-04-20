@@ -32,10 +32,10 @@ namespace Game.Bullet {
             return this;
         }
 
-        public BaseBullet Build() {
+        public Bullet Build() {
             // TODO: use a pool
             // FIXME: make prefab configurable
-            var bullet = Object.Instantiate(SharedData.bullet0, position, rotation).GetComponent<BaseBullet>();
+            var bullet = Object.Instantiate(SharedData.bullet0, position, rotation).GetComponent<Bullet>();
 
             bullet.Radius = radius;
             bullet.AI = ai.Clone();

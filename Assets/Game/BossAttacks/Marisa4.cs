@@ -1,45 +1,41 @@
 ﻿using System;
 using Game.Bullet;
+using Helpers;
 using UniRx;
 using UnityEngine;
-using BaseBullet = Game.Bullet.BaseBullet;
 using Random = UnityEngine.Random;
 
 
 namespace Game.BossAttacks {
     public class Marisa4 : IBossAttack {
         public Action Callback { get; set; }
-
         private readonly CompositeDisposable _disposable = new();
 
-        private float allTime = 25f;
-        private readonly float cooldown = .5f;
 
-        private float accumulatedTime;
+        private Instant endTime;
+        private CooldownTimer fireCooldown = new(.5f);
 
         public void CleanUp() => _disposable.Clear();
 
-        public Marisa4(float difficulty = 1f) {
-            cooldown /= difficulty;
-        }
 
         public void Begin() {
+            endTime = new Instant(25);
+
             Observable.EveryUpdate().Subscribe(_ => Update()).AddTo(_disposable);
             Random.InitState(7);
         }
 
 
         private void Update() {
-            accumulatedTime += Time.deltaTime;
-            allTime -= Time.deltaTime;
-            if (allTime < 0) {
+            fireCooldown.Tick();
+
+            if (endTime.Elapsed) {
                 Callback();
                 _disposable.Clear();
                 return;
             }
 
-            while (accumulatedTime > cooldown) {
-                accumulatedTime -= cooldown;
+            while (fireCooldown.IsReady()) {
                 Fire();
             }
         }
@@ -59,10 +55,10 @@ namespace Game.BossAttacks {
 
             var ratio = Random.value; // FIXME: should be seeded
 
-            var direction = (Player.instance.transform.position - pos + dirD).normalized
+            var direction = (Player.Instance.transform.position - pos + dirD).normalized
                             * Mathf.Lerp(2f, 1f, ratio);
 
-            new BulletBuilder(new BaseBullet.BulletAIStraight(direction))
+            new BulletBuilder(new Bullet.Bullet.BulletAIStraight(direction))
                 .SetRadius(Mathf.Lerp(.15f, .25f, ratio))
                 .SetPosition(pos)
                 .Build();

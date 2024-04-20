@@ -1,4 +1,5 @@
 using System;
+using Helpers;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,15 +7,16 @@ using UnityEngine.SceneManagement;
 
 namespace Game {
     public class Player : MonoBehaviour {
-        public static Player instance;
         [SerializeField] private GameObject bullet;
         [SerializeField] private float playerSpeed;
         [SerializeField] private float shieldDuration;
 
+        public static Player Instance { get; private set; }
+
         public readonly IntReactiveProperty lifes = new(5);
         // private const int maxLives = 5;
 
-        private float shieldTill;
+        private Instant shieldTill;
         public int score;
 
         public bool IsActive {
@@ -26,8 +28,7 @@ namespace Game {
 
         public event Action interactEvent;
 
-        private float cooldown = .1f;
-        private float accumulatedTime;
+        private CooldownTimer fireCooldown = new(.1f);
 
 
         private PlayerInput playerInput;
@@ -36,7 +37,7 @@ namespace Game {
         // private InputAction bombAction;
 
         private void Start() {
-            instance = this;
+            Instance = this;
             playerInput = GetComponent<PlayerInput>();
 
             moveAction = playerInput.actions["move"];
@@ -54,17 +55,16 @@ namespace Game {
         }
 
         private void FireLogic() {
-            accumulatedTime += Time.deltaTime;
-            while (accumulatedTime > cooldown) {
-                accumulatedTime -= cooldown;
+            fireCooldown.Tick();
+
+            while (fireCooldown.IsReady()) {
                 var deltas = new[] {
                     new Vector3(-.3f, .1f),
                     new Vector3(-.15f, .3f),
                     new Vector3(.15f, .3f),
-                    new Vector3(.3f, .1f),
+                    new Vector3(.3f, .1f)
                 };
-                foreach (var delta in deltas)
-                    Instantiate(bullet, transform.position + delta, default);
+                foreach (var delta in deltas) Instantiate(bullet, transform.position + delta, default);
             }
         }
 
@@ -89,8 +89,8 @@ namespace Game {
         }
 
         public void Hit() {
-            if (Time.time < shieldTill) return;
-            shieldTill = Time.time + shieldDuration;
+            if (shieldTill.Elapsed) return;
+            shieldTill = new Instant(shieldDuration);
             lifes.Value--;
 
             ResetPosition();

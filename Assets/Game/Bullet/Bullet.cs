@@ -1,9 +1,10 @@
 using Extensions;
 using UnityEngine;
 
+
 namespace Game.Bullet {
-    public partial class BaseBullet : MonoBehaviour {
-        [SerializeField] private AudioClip clickSound;
+    public partial class Bullet : MonoBehaviour {
+        [SerializeField] private AudioClip sound;
 
         public float Radius { get; set; }
 
@@ -14,7 +15,7 @@ namespace Game.Bullet {
         private void Start() {
             transform.localScale = new Vector3(Radius, Radius, Radius) * 5; // FIXME: magic number
 
-            AudioSource.PlayClipAtPoint(clickSound, default);
+            AudioSource.PlayClipAtPoint(sound, default);
         }
 
 
@@ -31,9 +32,9 @@ namespace Game.Bullet {
                 Destroy(gameObject);
             }
 
-            if (Player.instance.transform.position.DistanceTo(pos) * 1.3 < Radius) {
+            if (Player.Instance.transform.position.DistanceTo(pos) * 1.3 < Radius) {
                 // FIXME: magic number
-                Player.instance.Hit();
+                Player.Instance.Hit();
             }
         }
     }
