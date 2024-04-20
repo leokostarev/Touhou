@@ -43,7 +43,7 @@ namespace Game {
             slowdownAction = playerInput.actions["slowdown"];
             // bombAction = playerInput.actions["bomb"];
 
-            IsActive = false;
+            IsActive = true;
         }
 
         private void Update() {
