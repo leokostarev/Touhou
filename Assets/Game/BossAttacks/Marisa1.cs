@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Bullet;
 using UniRx;
 using UnityEngine;
 using BaseBullet = Game.Bullet.BaseBullet;
@@ -7,6 +8,11 @@ using Object = UnityEngine.Object;
 
 namespace Game.BossAttacks {
     public class Marisa1 : IBossAttack {
+        private static readonly BulletBuilder builder =
+            new BulletBuilder(new BaseBullet.BulletAIStraight(new Vector3(0, 2)))
+                .SetRadius(.2f)
+                .SetRotation(Quaternion.Euler(0, 0, 270));
+
         public Action Callback { get; set; }
 
         private readonly CompositeDisposable _disposable = new();
@@ -48,16 +54,13 @@ namespace Game.BossAttacks {
 
         private void Fire() {
             foreach (var i in new[] { -.1f, .2f, .5f, .8f, 1.1f }) {
-                var b = Object.Instantiate(SharedData.bullet0, Vector3.zero, Quaternion.Euler(0, 0, 270))
-                    .GetComponent<BaseBullet>();
+                var pos = SharedData.GetPos(i, 1.1f);
 
-                b.transform.position = new Vector3(
-                    SharedData.GetPosX(i) + Mathf.Sin((Time.time - startTime) * frequency),
-                    SharedData.GetPosY(1.1f)
-                );
+                pos.x += Mathf.Sin((Time.time - startTime) * frequency);
 
-                b.Radius = .2f;
-                b.AI = new BaseBullet.BulletAIStraight(new Vector3(0, 2));
+                builder
+                    .SetPosition(pos)
+                    .Build();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.Bullet;
 using Game.Events;
 using Game.Saw;
 using UniRx;
@@ -16,7 +17,7 @@ namespace Game.BossAttacks {
         private readonly CompositeDisposable _disposable = new();
 
         private float allTime = 10f;
-        private readonly float spawnRadius = 10f;
+        private const float spawnRadius = 10f;
         private readonly float cooldown = .01f;
 
         private bool isAttackFase;
@@ -62,12 +63,13 @@ namespace Game.BossAttacks {
             saw.size = .7f;
 
             for (var i = 0; i < 360; i += 10) {
-                var b = Object.Instantiate(SharedData.bullet0).GetComponent<BaseBullet>();
-                bullets.Add(b);
+                var b =
+                    new BulletBuilder(new BaseBullet.BulletAIOrbital(BossPos, 1.5f, -60, i))
+                        .SetRadius(.2f)
+                        .SetIsFrozen(true)
+                        .Build();
 
-                b.IsFrozen = true;
-                b.Radius = .2f;
-                b.AI = new BaseBullet.BulletAIRadius(BossPos, 1.5f, -60, i);
+                bullets.Add(b);
             }
 
             if ((Player.instance.transform.position - BossPos).magnitude < 1.7) Player.instance.ResetPosition();
@@ -84,13 +86,19 @@ namespace Game.BossAttacks {
 
             var BossPos = FightEvent.boss.transform.position;
 
-            var b = Object.Instantiate(SharedData.bullet0).GetComponent<BaseBullet>();
+            var b = new BulletBuilder(
+                    new BaseBullet.BulletAIOrbital(
+                        BossPos,
+                        Random.Range(1.6f, spawnRadius),
+                        40,
+                        Random.Range(0, 360) // FIXME: should be seeded
+                    )
+                )
+                .SetRadius(.2f)
+                .SetIsFrozen(true)
+                .Build();
+
             bullets.Add(b);
-
-            b.IsFrozen = true;
-            b.Radius = .2f;
-
-            b.AI = new BaseBullet.BulletAIRadius(BossPos, Random.Range(1.6f, spawnRadius), 40, Random.Range(0, 360));
         }
     }
 }

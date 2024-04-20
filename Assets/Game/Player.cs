@@ -85,7 +85,7 @@ namespace Game {
         }
 
         public void ResetPosition() {
-            transform.position = SharedData.getPos(.5f, .1f);
+            transform.position = SharedData.GetPos(.5f, .1f);
         }
 
         public void Hit() {

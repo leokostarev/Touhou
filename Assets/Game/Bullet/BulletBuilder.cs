@@ -6,6 +6,7 @@ namespace Game.Bullet {
         private float radius;
         private Vector3 position;
         private Quaternion rotation;
+        private bool isFrozen;
 
         public BulletBuilder(IBulletAI ai_) {
             ai = ai_;
@@ -26,13 +27,19 @@ namespace Game.Bullet {
             return this;
         }
 
+        public BulletBuilder SetIsFrozen(bool isFrozen_) {
+            isFrozen = isFrozen_;
+            return this;
+        }
+
         public BaseBullet Build() {
             // TODO: use a pool
             // FIXME: make prefab configurable
             var bullet = Object.Instantiate(SharedData.bullet0, position, rotation).GetComponent<BaseBullet>();
 
             bullet.Radius = radius;
-            bullet.AI = ai;
+            bullet.AI = ai.Clone();
+            bullet.IsFrozen = isFrozen;
 
             return bullet;
         }

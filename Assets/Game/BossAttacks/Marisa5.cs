@@ -43,11 +43,11 @@ namespace Game.BossAttacks {
         }
 
         private void Fire() {
-            foreach (var rot in new[] { 0, 45, 90, 135, 180, 225, 270, 315 }) {
+            for (var rotation = 0f; rotation < 360f; rotation += 45f) {
                 var laser = Object.Instantiate(
                         SharedData.laser0,
                         FightEvent.boss.transform.position,
-                        Quaternion.Euler(0, 0, rot + stacks * 15)
+                        Quaternion.Euler(0, 0, rotation + stacks * 15)
                     )
                     .GetComponent<BaseLaser>();
 

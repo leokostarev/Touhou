@@ -1,14 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
+using Game.Bullet;
 using Game.Events;
 using UniRx;
 using UnityEngine;
 using BaseBullet = Game.Bullet.BaseBullet;
-using Object = UnityEngine.Object;
 
 namespace Game.BossAttacks {
     public class Marisa2 : IBossAttack {
+        private static readonly BulletBuilder builder =
+            new BulletBuilder(new BaseBullet.BulletAIForward(4))
+                .SetRadius(.2f);
+
         public Action Callback { get; set; }
 
         private readonly CompositeDisposable _disposable = new();
@@ -16,7 +19,7 @@ namespace Game.BossAttacks {
         private float allTime = 10f;
         private const float cooldown = .3f;
 
-        private float deltaAngle;
+        private float deltaAngle; // in degrees
 
         private float accumulatedTime;
 
@@ -42,36 +45,33 @@ namespace Game.BossAttacks {
         }
 
         private void Fire() {
-            for (double angle = deltaAngle; angle < 2 * Math.PI + deltaAngle; angle += 1d / 4 * Math.PI) {
-                foreach (var i in GetPositions(angle)) {
-                    var b = Object.Instantiate(
-                            SharedData.bullet0,
-                            FightEvent.boss.transform.position + new Vector3(i.Item1, i.Item2),
-                            Quaternion.Euler(0, 0, (float)(angle / Math.PI) * 180)
-                        )
-                        .GetComponent<BaseBullet>();
+            for (var angle = 0; angle < 360; angle += 45) {
+                var rotation = Quaternion.Euler(0, 0, angle + deltaAngle);
 
-                    b.Radius = .2f;
-                    b.AI = new BaseBullet.BulletAIForward(4);
+                foreach (var i in GetOffsets(rotation)) {
+                    builder
+                        .SetPosition(FightEvent.boss.transform.position + i)
+                        .SetRotation(rotation)
+                        .Build();
                 }
             }
 
-            deltaAngle += (float)Math.PI / 16;
+            deltaAngle += 11.25f;
         }
 
-        private static IEnumerable<(float, float)> GetPositions(double angle) {
-            // FIXME: use Vector2
+
+        [SuppressMessage("ReSharper", "ReturnTypeCanBeEnumerable.Local")]
+        // TODO: benchmark array against IEnumerable
+        private static Vector3[] GetOffsets(Quaternion rotation) {
             return new[] {
-                (0f, 0f),
-                (-.2f, .2f), (-.2f, -.2f),
-                (-.4f, .4f), (-.4f, -.4f),
-                (-.6f, .6f), (-.6f, -.6f),
-            }.Select(
-                i => (
-                    (float)(i.Item1 * Math.Cos(angle) - i.Item2 * Math.Sin(angle)),
-                    (float)(i.Item1 * Math.Sin(angle) + i.Item2 * Math.Cos(angle))
-                )
-            );
+                rotation * new Vector3(0f, 0f),
+                rotation * new Vector3(-.2f, .2f),
+                rotation * new Vector3(-.2f, -.2f),
+                rotation * new Vector3(-.4f, .4f),
+                rotation * new Vector3(-.4f, -.4f),
+                rotation * new Vector3(-.6f, .6f),
+                rotation * new Vector3(-.6f, -.6f),
+            };
         }
     }
 }

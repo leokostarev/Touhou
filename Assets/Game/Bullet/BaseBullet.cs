@@ -26,7 +26,7 @@ namespace Game.Bullet {
             var pos = transform.position;
 
             // FIXME: move deletion logic to bulletAI
-            if (!SharedData.isInBounds(pos, 4)) {
+            if (!SharedData.IsInBounds(pos, 4)) {
                 // FIXME: magic number
                 Destroy(gameObject);
             }

@@ -41,10 +41,10 @@ namespace Game.Laser {
 
             var pos = transform.position;
 
-            if (!SharedData.isInBounds(pos, 4)) Destroy(gameObject);
+            if (!SharedData.IsInBounds(pos, 4)) Destroy(gameObject);
 
             // if ((Player.instance.transform.position - pos).sqrMagnitude * 1.7 < radius * radius)
-            //     Player.instance.Hit(); TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //     Player.instance.Hit(); TODO: hit player
         }
 
         private void GoByMonotone() {

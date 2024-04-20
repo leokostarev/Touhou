@@ -16,7 +16,7 @@ namespace Game.BossAttacks {
         }
 
         public BossMove((float, float) pos, float duration_) {
-            targetPos = SharedData.getPos(pos.Item1, pos.Item2);
+            targetPos = SharedData.GetPos(pos.Item1, pos.Item2);
             duration = duration_;
         }
 

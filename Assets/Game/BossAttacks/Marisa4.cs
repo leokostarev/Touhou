@@ -1,8 +1,8 @@
 ﻿using System;
+using Game.Bullet;
 using UniRx;
 using UnityEngine;
 using BaseBullet = Game.Bullet.BaseBullet;
-using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
@@ -46,21 +46,26 @@ namespace Game.BossAttacks {
 
         private static void Fire() {
             var t = Random.value;
+
             var pos = Random.value switch {
-                < .25f => SharedData.getPos(0, t),
-                < .5f => SharedData.getPos(1, t),
-                < .75f => SharedData.getPos(t, 0),
-                _ => SharedData.getPos(t, 1)
+                < .25f => SharedData.GetPos(0, t),
+                < .5f => SharedData.GetPos(1, t),
+                < .75f => SharedData.GetPos(t, 0),
+                _ => SharedData.GetPos(t, 1)
             };
+
             var dirD = Random.onUnitSphere / 4;
             dirD.z = 0;
-            var direction = (Player.instance.transform.position - pos + dirD).normalized;
 
-            var b = Object.Instantiate(SharedData.bullet0, pos, default).GetComponent<BaseBullet>();
+            var ratio = Random.value; // FIXME: should be seeded
 
-            var ratio = Random.value;
-            b.Radius = Mathf.Lerp(.15f, .25f, ratio);
-            b.AI = new BaseBullet.BulletAIStraight(direction * Mathf.Lerp(2f, 1f, ratio));
+            var direction = (Player.instance.transform.position - pos + dirD).normalized
+                            * Mathf.Lerp(2f, 1f, ratio);
+
+            new BulletBuilder(new BaseBullet.BulletAIStraight(direction))
+                .SetRadius(Mathf.Lerp(.15f, .25f, ratio))
+                .SetPosition(pos)
+                .Build();
         }
     }
 }

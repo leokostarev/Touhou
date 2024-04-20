@@ -9,6 +9,8 @@ namespace Game.Bullet {
                 direction = _direction;
             }
 
+            public IBulletAI Clone() => this;
+
             public void OnFixedUpdate(BaseBullet bullet) {
                 bullet.transform.position += direction;
             }

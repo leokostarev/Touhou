@@ -21,14 +21,14 @@ public static class SharedData {
     }
 
 
-    public static bool isInBounds(Vector3 pos, float padding = 0) {
+    public static bool IsInBounds(Vector3 pos, float padding = 0) {
         return pos.x > x_min - padding &&
                pos.x < x_max + padding &&
                pos.y > y_min - padding &&
                pos.y < y_max + padding;
     }
 
-    public static Vector3 getPos(float x, float y) {
+    public static Vector3 GetPos(float x, float y) {
         return new Vector3(
             Mathf.Lerp(x_min, x_max, x),
             Mathf.Lerp(y_min, y_max, y)

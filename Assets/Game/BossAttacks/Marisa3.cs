@@ -1,8 +1,8 @@
 ﻿using System;
+using Game.Bullet;
 using UniRx;
 using UnityEngine;
 using BaseBullet = Game.Bullet.BaseBullet;
-using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
@@ -48,16 +48,13 @@ namespace Game.BossAttacks {
             var pongetT = Mathf.PingPong(accumulatedT, 1);
             var rotation = Mathf.Lerp(-AngleRange, AngleRange, pongetT) - 90;
 
-            var b = Object.Instantiate(
-                    SharedData.bullet0,
-                    SharedData.getPos(pongetT / 4 + .375f + Random.value / 4 - .125f, 1.1f),
-                    Quaternion.Euler(0, 0, rotation)
-                )
-                .GetComponent<BaseBullet>();
+            var ratio = Random.value; // FIXME: should be seeded
 
-            var ratio = Random.value;
-            b.Radius = 0.1f + .2f * ratio;
-            b.AI = new BaseBullet.BulletAIForward(5 - 3 * ratio);
+            new BulletBuilder(new BaseBullet.BulletAIForward(5 - 3 * ratio))
+                .SetRadius(0.1f + .2f * ratio)
+                .SetRotation(Quaternion.Euler(0, 0, rotation))
+                .SetPosition(SharedData.GetPos(pongetT / 4 + .375f + Random.value / 4 - .125f, 1.1f))
+                .Build();
         }
     }
 }

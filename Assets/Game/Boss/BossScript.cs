@@ -20,7 +20,7 @@ namespace Game.Boss {
 
         public void Init(string bossName, int phase) {
             maxLifes = lifes.Value;
-            transform.position = SharedData.getPos(.5f, 1.2f);
+            transform.position = SharedData.GetPos(.5f, 1.2f);
             attacks = BossPhaseFactory.Get(bossName, phase);
             NextAttack();
 

@@ -1,12 +1,16 @@
 ﻿using System;
+using Game.Bullet;
 using Game.Events;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using UniRx;
 using BaseBullet = Game.Bullet.BaseBullet;
 
 namespace Game.BossAttacks {
     public class Marisa0 : IBossAttack {
+        private static readonly BulletBuilder builder =
+            new BulletBuilder(new BaseBullet.BulletAIForward(3))
+                .SetRadius(.4f);
+
         public Action Callback { get; set; }
         private readonly CompositeDisposable _disposable = new();
 
@@ -54,14 +58,11 @@ namespace Game.BossAttacks {
         }
 
         private void Fire() {
-            var b = Object.Instantiate(
-                SharedData.bullet0,
-                position,
-                Quaternion.Euler(0, 0, deltaDeg * noOfAttack)
-            ).GetComponent<BaseBullet>();
+            builder
+                .SetPosition(position)
+                .SetRotation(Quaternion.Euler(0, 0, deltaDeg * noOfAttack))
+                .Build();
 
-            b.Radius = .4f;
-            b.AI = new BaseBullet.BulletAIForward(3);
             noOfAttack++;
         }
     }
