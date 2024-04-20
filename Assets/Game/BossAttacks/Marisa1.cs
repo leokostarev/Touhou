@@ -1,11 +1,14 @@
 ﻿using System;
 using UniRx;
 using UnityEngine;
+using BaseBullet = Game.Bullet.BaseBullet;
 using Object = UnityEngine.Object;
 
 
 namespace Game.BossAttacks {
-    public class Marisa1 : AbsBossAttack {
+    public class Marisa1 : IBossAttack {
+        public Action Callback { get; set; }
+
         private readonly CompositeDisposable _disposable = new();
 
         private float allTime;
@@ -21,9 +24,9 @@ namespace Game.BossAttacks {
         }
 
 
-        public override void CleanUp() => _disposable.Clear();
+        public void CleanUp() => _disposable.Clear();
 
-        public override void Begin() {
+        public void Begin() {
             Observable.EveryUpdate().Subscribe(_ => Update()).AddTo(_disposable);
             startTime = Time.time + .8f;
         }
@@ -32,7 +35,7 @@ namespace Game.BossAttacks {
             accumulatedTime += Time.deltaTime * (.2f + Math.Abs(Mathf.Cos((Time.time - startTime) * frequency)));
             allTime -= Time.deltaTime;
             if (allTime < 0) {
-                callback();
+                Callback();
                 _disposable.Clear();
                 return;
             }
@@ -45,14 +48,16 @@ namespace Game.BossAttacks {
 
         private void Fire() {
             foreach (var i in new[] { -.1f, .2f, .5f, .8f, 1.1f }) {
-                var b = Object.Instantiate(ShareData.bullet0, Vector3.zero, Quaternion.Euler(0, 0, 270))
-                    .GetComponent<Prefabs.BaseBullet>();
+                var b = Object.Instantiate(SharedData.bullet0, Vector3.zero, Quaternion.Euler(0, 0, 270))
+                    .GetComponent<BaseBullet>();
 
                 b.transform.position = new Vector3(
-                    ShareData.GetPosX(i) + Mathf.Sin((Time.time - startTime) * frequency),
-                    ShareData.GetPosY(1.1f));
-                b.radius = .2f;
-                b.speed = 2;
+                    SharedData.GetPosX(i) + Mathf.Sin((Time.time - startTime) * frequency),
+                    SharedData.GetPosY(1.1f)
+                );
+
+                b.Radius = .2f;
+                b.AI = new BaseBullet.BulletAIStraight(new Vector3(0, 2));
             }
         }
     }

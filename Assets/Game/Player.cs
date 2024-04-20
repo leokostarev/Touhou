@@ -77,15 +77,15 @@ namespace Game {
 
         private void ClipCoords() {
             var pos = transform.position;
-            if (pos.x < ShareData.x_min) pos.x = ShareData.x_min;
-            if (pos.x > ShareData.x_max) pos.x = ShareData.x_max;
-            if (pos.y < ShareData.y_min) pos.y = ShareData.y_min;
-            if (pos.y > ShareData.y_max) pos.y = ShareData.y_max;
+            if (pos.x < SharedData.x_min) pos.x = SharedData.x_min;
+            if (pos.x > SharedData.x_max) pos.x = SharedData.x_max;
+            if (pos.y < SharedData.y_min) pos.y = SharedData.y_min;
+            if (pos.y > SharedData.y_max) pos.y = SharedData.y_max;
             transform.position = pos;
         }
 
         public void ResetPosition() {
-            transform.position = ShareData.getPos(.5f, .1f);
+            transform.position = SharedData.getPos(.5f, .1f);
         }
 
         public void Hit() {

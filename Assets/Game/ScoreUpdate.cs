@@ -1,12 +1,13 @@
-using Game;
 using TMPro;
 using UnityEngine;
 
-public class ScoreUpdate : MonoBehaviour {
-    [SerializeField] private TextMeshProUGUI text;
+namespace Game {
+    public class ScoreUpdate : MonoBehaviour {
+        [SerializeField] private TextMeshProUGUI text;
 
 
-    private void Update() {
-        text.text = Player.instance.score.ToString();
+        private void Update() {
+            text.text = Player.instance.score.ToString();
+        }
     }
 }

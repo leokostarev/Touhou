@@ -67,9 +67,9 @@ namespace Game.Events {
         }
 
         private static void EnablePanel() =>
-            ShareData.PharasePanel.transform.DOMoveY(ShareData.PharasePanel.endPosY, transitionTime);
+            SharedData.PharasePanel.transform.DOMoveY(SharedData.PharasePanel.endPosY, transitionTime);
 
         private static void DiasblePanel() =>
-            ShareData.PharasePanel.transform.DOMoveY(ShareData.PharasePanel.beginPosY, transitionTime);
+            SharedData.PharasePanel.transform.DOMoveY(SharedData.PharasePanel.beginPosY, transitionTime);
     }
 }

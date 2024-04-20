@@ -2,7 +2,9 @@
 using UniRx;
 
 namespace Game.BossAttacks {
-    public class BossWait : AbsBossAttack {
+    public class BossWait : IBossAttack {
+        public Action Callback { get; set; }
+
         private readonly CompositeDisposable _disposable = new();
 
         private readonly float duration;
@@ -11,17 +13,17 @@ namespace Game.BossAttacks {
             this.duration = duration;
         }
 
-        public override void CleanUp() => _disposable.Clear();
+        public void CleanUp() => _disposable.Clear();
 
-        public override void AddCallback(Action onAttackEnd) {
-            callback = onAttackEnd;
-        }
 
-        public override void Begin() {
-            Observable.EveryUpdate().Delay(TimeSpan.FromSeconds(duration)).Subscribe(_ => {
-                callback();
-                _disposable.Clear();
-            }).AddTo(_disposable);
+        public void Begin() {
+            // FIXME: it's not a good idea to use EveryUpdate here
+            Observable.EveryUpdate().Delay(TimeSpan.FromSeconds(duration)).Subscribe(
+                _ => {
+                    Callback();
+                    _disposable.Clear();
+                }
+            ).AddTo(_disposable);
         }
     }
 }

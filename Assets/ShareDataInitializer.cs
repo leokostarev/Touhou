@@ -8,9 +8,9 @@ public class ShareDataInitializer : MonoBehaviour {
     
 
     private void Awake() {
-        ShareData.bullet0 = bullet0;
-        ShareData.laser0 = laser0;
-        ShareData.saw0 = saw0;
-        ShareData.boss = boss;
+        SharedData.bullet0 = bullet0;
+        SharedData.laser0 = laser0;
+        SharedData.saw0 = saw0;
+        SharedData.boss = boss;
     }
 }

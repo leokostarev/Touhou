@@ -11,7 +11,7 @@ namespace Game {
 
         private void Awake() {
             TalkEvent.text = GetComponent<TextMeshProUGUI>();
-            ShareData.PharasePanel = this;
+            SharedData.PharasePanel = this;
             beginPosY = transform.position.y;
             endPosY = -beginPosY;
         }

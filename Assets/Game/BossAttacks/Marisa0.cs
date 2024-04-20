@@ -1,11 +1,15 @@
-﻿using Game.Events;
+﻿using System;
+using Game.Events;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using UniRx;
+using BaseBullet = Game.Bullet.BaseBullet;
 
 namespace Game.BossAttacks {
-    public class Marisa0 : AbsBossAttack {
+    public class Marisa0 : IBossAttack {
+        public Action Callback { get; set; }
         private readonly CompositeDisposable _disposable = new();
+
 
         private float remainingTime;
 
@@ -25,13 +29,12 @@ namespace Game.BossAttacks {
             this.deltaDeg = deltaDeg;
         }
 
-        public override void CleanUp() => _disposable.Clear();
+        public void CleanUp() => _disposable.Clear();
 
-        public override void Begin() {
+        public void Begin() {
             position = FightEvent.boss.transform.position;
             Observable.EveryUpdate().Subscribe(_ => Update()).AddTo(_disposable);
-            if (noWait)
-                callback();
+            if (noWait) Callback();
         }
 
         private void Update() {
@@ -39,8 +42,7 @@ namespace Game.BossAttacks {
             remainingTime -= Time.deltaTime;
 
             if (remainingTime < 0) {
-                if (!noWait)
-                    callback();
+                if (!noWait) Callback();
                 _disposable.Clear();
                 return;
             }
@@ -53,13 +55,13 @@ namespace Game.BossAttacks {
 
         private void Fire() {
             var b = Object.Instantiate(
-                ShareData.bullet0,
+                SharedData.bullet0,
                 position,
                 Quaternion.Euler(0, 0, deltaDeg * noOfAttack)
-            ).GetComponent<Prefabs.BaseBullet>();
+            ).GetComponent<BaseBullet>();
 
-            b.radius = .4f;
-            b.speed = 3;
+            b.Radius = .4f;
+            b.AI = new BaseBullet.BulletAIForward(3);
             noOfAttack++;
         }
     }

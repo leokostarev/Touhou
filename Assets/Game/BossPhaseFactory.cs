@@ -5,7 +5,7 @@ using Game.BossAttacks;
 
 namespace Game {
     public static class BossPhaseFactory {
-        public static List<AbsBossAttack> Get(string name, int phase) {
+        public static List<IBossAttack> Get(string name, int phase) {
             return (name, phase) switch {
                 ("Marisa", -1) => GetTest(),
                 ("Marisa", 0) => GetMarisa0(),
@@ -13,13 +13,13 @@ namespace Game {
             };
         }
 
-        private static List<AbsBossAttack> GetTest() => new() {
+        private static List<IBossAttack> GetTest() => new() {
             new BossMove((.5f, .7f), 1),
             new Marisa6(),
             new BossWait(10f)
         };
 
-        private static List<AbsBossAttack> GetMarisa0() => new() {
+        private static List<IBossAttack> GetMarisa0() => new() {
             new BossMove((.5f, .6f), 2),
             new BossWait(.2f),
             new Marisa0(),

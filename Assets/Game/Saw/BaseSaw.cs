@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Prefabs {
+namespace Game.Saw {
     public class BaseSaw : MonoBehaviour {
         private enum SawAI {
             Grow

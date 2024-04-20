@@ -1,7 +1,7 @@
 ﻿using Game;
 using UnityEngine;
 
-public static class ShareData {
+public static class SharedData {
     public static int chapterNo = -1;
 
     public const float x_min = .5f;

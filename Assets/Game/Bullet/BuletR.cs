@@ -1,7 +1,7 @@
 using Game.Events;
 using UnityEngine;
 
-namespace Prefabs {
+namespace Game.Bullet {
     public class BuletR : MonoBehaviour {
         private float speed = 10f;
         private void Update() {

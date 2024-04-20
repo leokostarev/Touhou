@@ -30,7 +30,7 @@ namespace Game {
         }
 
         private void Start() {
-            scriptList = ScriptFactory.Get(ShareData.chapterNo);
+            scriptList = ScriptFactory.Get(SharedData.chapterNo);
             NextEvent();
         }
 

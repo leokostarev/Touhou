@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Boss;
 using Object = UnityEngine.Object;
 
 namespace Game.Events {
@@ -21,7 +22,7 @@ namespace Game.Events {
         }
 
         public void Begin() {
-            boss = Object.Instantiate(ShareData.boss).GetComponent<BossScript>();
+            boss = Object.Instantiate(SharedData.boss).GetComponent<BossScript>();
             boss.Init(bossName, bossPhase);
             Player.instance.IsActive = true;
             IsBossSet = true;

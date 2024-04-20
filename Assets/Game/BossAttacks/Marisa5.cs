@@ -1,4 +1,6 @@
-﻿using Game.Events;
+﻿using System;
+using Game.Events;
+using Game.Laser;
 using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -6,18 +8,20 @@ using Random = UnityEngine.Random;
 
 
 namespace Game.BossAttacks {
-    public class Marisa5 : AbsBossAttack {
+    public class Marisa5 : IBossAttack {
+        public Action Callback { get; set; }
+
         private readonly CompositeDisposable _disposable = new();
 
         private float lastTime = 10f;
-        private int stacks = 0;
+        private int stacks;
         private const float cooldown = 1f;
 
         private float accumulatedTime;
 
-        public override void CleanUp() => _disposable.Clear();
+        public void CleanUp() => _disposable.Clear();
 
-        public override void Begin() {
+        public void Begin() {
             Observable.EveryUpdate().Subscribe(_ => Update()).AddTo(_disposable);
             Random.InitState(3);
         }
@@ -27,7 +31,7 @@ namespace Game.BossAttacks {
             accumulatedTime += Time.deltaTime;
             lastTime -= Time.deltaTime;
             if (lastTime < 0) {
-                callback();
+                Callback();
                 _disposable.Clear();
                 return;
             }
@@ -41,10 +45,11 @@ namespace Game.BossAttacks {
         private void Fire() {
             foreach (var rot in new[] { 0, 45, 90, 135, 180, 225, 270, 315 }) {
                 var laser = Object.Instantiate(
-                        ShareData.laser0,
+                        SharedData.laser0,
                         FightEvent.boss.transform.position,
-                        Quaternion.Euler(0, 0, rot + stacks * 15))
-                    .GetComponent<Prefabs.BaseLaser>();
+                        Quaternion.Euler(0, 0, rot + stacks * 15)
+                    )
+                    .GetComponent<BaseLaser>();
 
                 laser.speed = 2f;
                 laser.lendth = 1.5f;

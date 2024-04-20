@@ -6,21 +6,21 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game {
+namespace Game.Boss {
     public class BossScript : MonoBehaviour {
         [SerializeField] private Image healthBar;
-        private List<AbsBossAttack> attacks;
+        private List<IBossAttack> attacks;
         private int noAttack;
 
         public FloatReactiveProperty lifes = new(10000);
         private float maxLifes;
 
         public event Action onAttacksEnd;
-        private AbsBossAttack nowAttack;
+        private IBossAttack nowAttack;
 
         public void Init(string bossName, int phase) {
             maxLifes = lifes.Value;
-            transform.position = ShareData.getPos(.5f, 1.2f);
+            transform.position = SharedData.getPos(.5f, 1.2f);
             attacks = BossPhaseFactory.Get(bossName, phase);
             NextAttack();
 
@@ -33,8 +33,7 @@ namespace Game {
                 i.CleanUp();
             }
 
-            if (!gameObject.IsDestroyed())
-                Destroy(gameObject);
+            if (!gameObject.IsDestroyed()) Destroy(gameObject);
         }
 
         private void NextAttack() {
@@ -46,7 +45,7 @@ namespace Game {
 
             nowAttack = attacks[noAttack];
             noAttack += 1;
-            nowAttack.AddCallback(NextAttack);
+            nowAttack.Callback = NextAttack;
             nowAttack.Begin();
         }
     }

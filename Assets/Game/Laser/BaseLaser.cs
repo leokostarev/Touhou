@@ -1,8 +1,7 @@
 using System;
-
 using UnityEngine;
 
-namespace Prefabs {
+namespace Game.Laser {
     public class BaseLaser : MonoBehaviour {
         private enum LaserAI {
             Monotone
@@ -42,7 +41,7 @@ namespace Prefabs {
 
             var pos = transform.position;
 
-            if (!ShareData.isInBounds(pos, 4)) Destroy(gameObject);
+            if (!SharedData.isInBounds(pos, 4)) Destroy(gameObject);
 
             // if ((Player.instance.transform.position - pos).sqrMagnitude * 1.7 < radius * radius)
             //     Player.instance.Hit(); TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!
